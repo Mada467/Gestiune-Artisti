@@ -1,0 +1,22 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh; 
+}
+
+.app-container {
+  min-height: 100vh; 
+  width: 100vw; 
+  
+  background-image: url('/CosaNuestra.png'); 
+  
+  background-size: cover; 
+  background-position: center center; 
+  background-repeat: no-repeat; 
+  background-attachment: fixed; 
+  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+  padding: 20px; 
+  box-sizing: border-box; 
+}
