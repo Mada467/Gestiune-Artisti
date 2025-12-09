@@ -1,23 +1,75 @@
-import { useState } from 'react';
+
+
+import React, { useState } from 'react';
 import './App.css'; 
-import ListaPersoane from './components/ListaPersoane';
+import ListaArtisti from './components/ListaArtisti.jsx'; 
+import AdaugaEditeazaArtist from './components/AdaugaEditeazaArtist.jsx'; 
+
+const INITIAL_PEOPLE = [];
 
 function App() {
-  const [persoane] = useState([
-    { id: 1, nume: 'Rauw Alejandro' },
-    { id: 2, nume: 'Lyanno' },
-    { id: 3, nume: 'Bad Bunny' },
-    { id: 4, nume: 'Anuel AA' }
-  ]);
+    // --- 1. STĂRILE APLICAȚIEI ---
+    const [artisti, setArtisti] = useState(INITIAL_PEOPLE);
+    const [artistSelectat, setArtistSelectat] = useState(null); 
+    const [searchTerm, setSearchTerm] = useState(''); 
+    const [isModalOpen, setIsModalOpen] = useState(false); 
+    
+    // --- 2. LOGICA CRUD (Doar CREATE este activă) ---
+    
+    const handleSaveArtist = (artistSalvat) => {
+       
+        const newArtist = { ...artistSalvat, id: Date.now() }; 
+        
+        
+        setArtisti(prevArtisti => [...prevArtisti, newArtist]); 
+        
+        // Selectăm automat noua persoană pentru a vedea datele în dreapta
+        setArtistSelectat(newArtist); 
+        
+        // Închidem fereastra
+        setIsModalOpen(false); 
+    };
 
-  return (
-    <div className="app-container">
-      <ListaPersoane 
-        people={persoane} 
-        onAddClick={() => {}} 
-      />
-    </div>
-  );
+   
+    const handleEdit = () => {  };
+    const handleDelete = () => { };
+    const handleCopyData = () => { };
+
+
+    return (
+        <div className="App">
+            <header className="header-container">
+                <h1>Catalog Persoane</h1>
+                <button 
+                    onClick={() => setIsModalOpen(true)}
+                    className="adauga-nou-btn">
+                    ➕ ADAUGĂ NOU
+                </button>
+            </header>
+
+            <ListaArtisti 
+                artisti={artisti}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                artistSelectat={artistSelectat}
+                onSelectArtist={setArtistSelectat}
+                
+              
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onCopyData={handleCopyData}
+            />
+
+            <AdaugaEditeazaArtist 
+                isVisible={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSave={handleSaveArtist}
+                personToEdit={null} 
+            />
+            
+            {}
+        </div>
+    );
 }
 
 export default App;

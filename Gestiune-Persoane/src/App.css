@@ -1,22 +1,54 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100vh; 
+/* src/App.css - TEMA COSA NOSTRA */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #3e322a; /* Maro închis */
+    min-height: 100vh;
+    
+    /* Fundalul tematic */
+    background-color: #f7f0e8; 
+    background-image: url('/CosaNuestra.png'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-.app-container {
-  min-height: 100vh; 
-  width: 100vw; 
-  
-  background-image: url('/CosaNuestra.png'); 
-  
-  background-size: cover; 
-  background-position: center center; 
-  background-repeat: no-repeat; 
-  background-attachment: fixed; 
-  
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  
-  padding: 20px; 
-  box-sizing: border-box; 
+.App {
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid #a85834; /* Maro Principal */
+    max-width: 1400px;
+    margin: 0 auto 20px auto; 
+    
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+}
+
+.header-container h1 {
+    color: #a85834; 
+    font-size: 2.2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.adauga-nou-btn {
+    background-color: #e45b3d; /* Roșu/Portocaliu Accent */
+    color: #fff;
+    padding: 10px 20px;
+    border: 1px solid #a85834;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.adauga-nou-btn:hover {
+    background-color: #d15135;
 }

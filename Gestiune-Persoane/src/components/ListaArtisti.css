@@ -1,0 +1,18 @@
+
+.btn-edit { 
+    background-color: #bfac8b; 
+    color: #3e322a; 
+    border-color: #a1917b;
+}
+
+.btn-delete { 
+    background-color: #c00000; 
+    color: white; 
+    border-color: #9c0000;
+}
+
+.btn-copy { 
+    background-color: #bfac8b; 
+    color: #3e322a; 
+    border-color: #a1917b;
+}
