@@ -1,9 +1,9 @@
-
+// src/components/ListaArtisti.jsx - ZIUA 2: Update, Delete & Search Activ
 
 import React from 'react';
 import './ListaArtisti.css'; 
 
-// --- Logica de Verificare Valabilitate CI ---
+// --- Logica de Verificare Valabilitate CI (Neschimbată) ---
 function getValabilitateCI(dataExpirareStr) {
     if (!dataExpirareStr) {
         return { status: 'Necunoscut', message: 'Data de expirare lipsește.', class: 'status-gray' };
@@ -32,7 +32,7 @@ function ListaArtisti({
     artisti, searchTerm, setSearchTerm, artistSelectat, 
     onSelectArtist, onEdit, onDelete, onCopyData 
 }) {
-    // Logica de filtrare
+    // Logica de filtrare completă (Căutarea este ACUM ACTIVĂ)
     const artistiFiltrati = artisti.filter(person => {
         const term = searchTerm.toLowerCase();
         return (
@@ -50,7 +50,7 @@ function ListaArtisti({
                     type="text"
                     placeholder="Caută după nume, prenume sau CNP..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => setSearchTerm(e.target.value)} // Căutarea este activă!
                     className="search-input-futurist"
                 />
 
@@ -61,6 +61,7 @@ function ListaArtisti({
                         artistiFiltrati.map(a => (
                             <div
                                 key={a.id}
+                                // CORECȚIE: Backticks (`) pentru clasa dinamică
                                 className={`artist-card ${artistSelectat && artistSelectat.id === a.id ? 'selectat-neon' : ''}`}
                                 onClick={() => onSelectArtist(a)}
                             >
@@ -105,7 +106,7 @@ function ListaArtisti({
                             return (
                                 <p>
                                     <strong>Valabilitate: </strong> 
-                                    {}
+                                    {/* CORECȚIE: Backticks (`) */}
                                     <span className={`status-text ${valabilitate.class} status-bold`}> 
                                         {valabilitate.message}
                                     </span>
@@ -113,10 +114,10 @@ function ListaArtisti({
                             );
                         })()}
 
-                        {}
                         <div className="detalii-actions">
-                            <button onClick={() => onEdit(artistSelectat)} className="btn-action btn-edit">Editează</button>
-                            <button onClick={() => onCopyData(artistSelectat)} className="btn-action btn-copy">Copiază Date</button>
+                            {/* Butoanele Editează și Șterge sunt ACUM ACTIVE și trimit obiectul selectat */}
+                            <button onClick={() => onEdit(artistSelectat)} className="btn-action btn-edit">Editează</button> 
+                            <button onClick={onCopyData} className="btn-action btn-copy">Copiază Date</button>
                             <button onClick={onDelete} className="btn-action btn-delete">Șterge</button>
                         </div>
                     </div>

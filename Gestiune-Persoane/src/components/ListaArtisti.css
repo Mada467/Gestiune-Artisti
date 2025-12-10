@@ -1,18 +1,22 @@
+/* src/components/ListaArtisti.css - ZIUA 2: UPDATE & DELETE CULORI ACTIVE */
 
+/* ... (toate stilurile de bază rămân) ... */
+
+/* CULORI ZIUA 2: Editează și Șterge sunt active. Copiază rămâne neutru. */
 .btn-edit { 
-    background-color: #bfac8b; 
+    background-color: #bfac8b; /* Bej/Gri din temă (Culoarea lui Editează) */
     color: #3e322a; 
     border-color: #a1917b;
 }
 
 .btn-delete { 
-    background-color: #c00000; 
+    background-color: #c00000; /* Roșu clasic pentru Ștergere */
     color: white; 
     border-color: #9c0000;
 }
 
 .btn-copy { 
-    background-color: #bfac8b; 
+    background-color: #bfac8b; /* Rămâne neutru din Ziua 1 */
     color: #3e322a; 
     border-color: #a1917b;
 }

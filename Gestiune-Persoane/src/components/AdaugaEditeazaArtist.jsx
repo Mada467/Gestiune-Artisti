@@ -1,3 +1,4 @@
+// src/components/AdaugaEditeazaArtist.jsx - ZIUA 2: Editare Activă
 
 import React, { useState, useEffect } from 'react';
 import './AdaugaEditeazaArtist.css';
@@ -5,20 +6,21 @@ import './AdaugaEditeazaArtist.css';
 const initialPersonState = {
     nume: '',
     prenume: '',
-    cnp: '', // 13 cifre
+    cnp: '', 
     dataNasterii: '', 
-    seriaCi: '', // 2 caractere (litere)
-    numarCi: '', // 6 cifre
-    dataExpirareCi: '', // Format YYYY-MM-DD
+    seriaCi: '', 
+    numarCi: '', 
+    dataExpirareCi: '', 
     adresaDomiciliu: '',
-    nrTelefon: '', // 10 cifre
+    nrTelefon: '', 
     pozaUrl: '',
 };
 
 function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
-    const [persoana, setPersoana] = useState(personToEdit || initialPersonState);
+    const [persoana, setPersoana] = useState(initialPersonState);
     const [errors, setErrors] = useState({});
 
+    // EFFECT: Încarcă datele persoanei dacă suntem pe modul Editare
     useEffect(() => {
         const personState = personToEdit ? personToEdit : initialPersonState;
         setPersoana(personState);
@@ -31,14 +33,12 @@ function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         
-        // Validare CNP (13 cifre), Telefon (10 cifre) și Număr CI (6 cifre) - doar cifre
-        if ((name === 'cnp' && !/^\d*$/.test(value)) || 
-            (name === 'nrTelefon' && !/^\d*$/.test(value)) || 
-            (name === 'numarCi' && !/^\d*$/.test(value))) {
+        // Validare cifre
+        if ((name === 'cnp' || name === 'nrTelefon' || name === 'numarCi') && !/^\d*$/.test(value)) {
             return;
         }
 
-        // Validare Seria CI (2 litere, uppercase)
+        // Validare Seria CI (Uppercase, max 2 chars)
         if (name === 'seriaCi') {
             const upperValue = value.toUpperCase();
             if (!/^[A-Z]*$/.test(upperValue) || upperValue.length > 2) return;
@@ -50,7 +50,6 @@ function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
         setErrors({ ...errors, [name]: '' });
     };
 
-    // Logica de încărcare Poză
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -64,31 +63,13 @@ function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
         let newErrors = {};
         let isValid = true;
         
-        // CORECȚIE: Am adăugat ghilimele la mesajele de eroare
-        if (!persoana.nume.trim()) { 
-            newErrors.nume = "Numele este obligatoriu."; 
-            isValid = false; 
-        }
-        if (persoana.cnp.length !== 13) { 
-            newErrors.cnp = "CNP-ul trebuie să aibă exact 13 cifre."; 
-            isValid = false; 
-        }
-        if (persoana.nrTelefon.length !== 10) { 
-            newErrors.nrTelefon = "Telefonul trebuie să aibă exact 10 cifre."; 
-            isValid = false; 
-        }
-        if (persoana.seriaCi.length !== 2) { 
-            newErrors.seriaCi = "Seria CI trebuie să aibă 2 litere."; 
-            isValid = false; 
-        }
-        if (persoana.numarCi.length !== 6) { 
-            newErrors.numarCi = "Numărul CI trebuie să aibă 6 cifre."; 
-            isValid = false; 
-        }
-        if (!persoana.dataExpirareCi) { 
-            newErrors.dataExpirareCi = "Data expirării CI este obligatorie."; 
-            isValid = false; 
-        }
+        // Validări (Acum cu ghilimele corecte!)
+        if (!persoana.nume.trim()) { newErrors.nume = "Numele este obligatoriu."; isValid = false; }
+        if (persoana.cnp.length !== 13) { newErrors.cnp = "CNP-ul trebuie să aibă exact 13 cifre."; isValid = false; }
+        if (persoana.nrTelefon.length !== 10) { newErrors.nrTelefon = "Telefonul trebuie să aibă exact 10 cifre."; isValid = false; }
+        if (persoana.seriaCi.length !== 2) { newErrors.seriaCi = "Seria CI trebuie să aibă 2 litere."; isValid = false; }
+        if (persoana.numarCi.length !== 6) { newErrors.numarCi = "Numărul CI trebuie să aibă 6 cifre."; isValid = false; }
+        if (!persoana.dataExpirareCi) { newErrors.dataExpirareCi = "Data expirării CI este obligatorie."; isValid = false; }
 
         setErrors(newErrors);
         return isValid;
@@ -104,10 +85,12 @@ function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
     return (
         <div className="modal-overlay">
             <div className="modal-content futurist-form">
+                {/* TITLU DINAMIC: Editează vs Adaugă */}
                 <h3>{personToEdit ? "Editează" : "Adaugă"} Persoană</h3>
+                
                 <form onSubmit={handleSubmit}>
                     
-                    {/* INPUTURI PRINCIPALE */}
+                    {/* INPUTURI */}
                     <label>Nume *</label>
                     <input type="text" name="nume" value={persoana.nume} onChange={handleChange} className={errors.nume ? 'input-error' : ''} />
                     {errors.nume && <p className="error-message">{errors.nume}</p>}
@@ -125,16 +108,15 @@ function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
                     <label>Adresa Domiciliu</label>
                     <input type="text" name="adresaDomiciliu" value={persoana.adresaDomiciliu} onChange={handleChange} />
 
-                    {/* GRUP CI */}
-                    {/* Am păstrat stilurile inline pentru a garanta aranjarea corectă dacă CSS-ul lipsește */}
-                    <div className="input-ci-group" style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                        <div className="ci-seria" style={{ flex: 1 }}>
-                            <label>Seria CI (2 litere) *</label>
+                    {/* Grup CI */}
+                    <div className="input-ci-group" style={{ display: 'flex', gap: '10px' }}>
+                        <div style={{ flex: 1 }}>
+                            <label>Seria CI *</label>
                             <input type="text" name="seriaCi" value={persoana.seriaCi} onChange={handleChange} maxLength="2" className={errors.seriaCi ? 'input-error' : ''} />
                             {errors.seriaCi && <p className="error-message">{errors.seriaCi}</p>}
                         </div>
-                        <div className="ci-numar" style={{ flex: 2 }}>
-                            <label>Număr CI (6 cifre) *</label>
+                        <div style={{ flex: 2 }}>
+                            <label>Număr CI *</label>
                             <input type="text" name="numarCi" value={persoana.numarCi} onChange={handleChange} maxLength="6" className={errors.numarCi ? 'input-error' : ''} />
                             {errors.numarCi && <p className="error-message">{errors.numarCi}</p>}
                         </div>
@@ -142,21 +124,19 @@ function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
                     
                     <label>Data Expirării CI *</label>
                     <input type="date" name="dataExpirareCi" value={persoana.dataExpirareCi} onChange={handleChange} className={errors.dataExpirareCi ? 'input-error' : ''} />
-                    {/* CORECȚIE: Am reparat 'className className' */}
                     {errors.dataExpirareCi && <p className="error-message">{errors.dataExpirareCi}</p>}
 
                     <label>Număr Telefon (10 cifre) *</label>
                     <input type="text" name="nrTelefon" value={persoana.nrTelefon} onChange={handleChange} maxLength="10" className={errors.nrTelefon ? 'input-error' : ''} />
-                    {}
                     {errors.nrTelefon && <p className="error-message">{errors.nrTelefon}</p>}
                     
-                    {/* ÎNCĂRCARE POZĂ */}
-                    <label className="input-file-label" style={{ marginTop: '20px' }}>Încarcă Poză/Avatar</label>
+                    <label style={{ marginTop: '20px' }} className="input-file-label">Încarcă Poză/Avatar</label>
                     <input type="file" name="poza" accept="image/*" onChange={handleFileChange} className="input-file-style" style={{ marginBottom: '15px' }} />
 
                     <div className="form-actions">
                         <button type="button" onClick={onClose} className="btn-cancel">Anulează</button>
                         <button type="submit" className="btn-save">
+                            {/* BUTON DINAMIC: Salvează vs Adaugă */}
                             {personToEdit ? "Salvează Modificările" : "Adaugă Persoana"}
                         </button>
                     </div>
