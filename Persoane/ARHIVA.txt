@@ -1,0 +1,775 @@
+/* src/components/AdaugaEditeazaArtist.css - TEMA COSA NOSTRA SIMPLIFICATĂ */
+
+/* 1. Fundal și Conținut Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fffaf5; 
+    color: #3e322a;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+    max-width: 500px;
+    width: 90%;
+    border: 2px solid #a85834; 
+}
+
+.modal-content h3 {
+    color: #a85834; 
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #c8a287;
+    padding-bottom: 10px;
+}
+
+/* 2. Layout Formular & Inputuri */
+.modal-content label {
+    display: block;
+    margin: 12px 0 4px 0;
+    font-weight: 600;
+}
+
+.modal-content input, .modal-content select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #c8a287; 
+    border-radius: 3px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.modal-content input:focus {
+    border-color: #e45b3d; 
+    box-shadow: 0 0 5px rgba(228, 91, 61, 0.5);
+    outline: none;
+}
+
+/* Gruparea Câmpurilor Seria/Numărul CI */
+.input-ci-group {
+    display: flex;
+    gap: 10px;
+}
+
+.ci-seria { flex: 1; }
+.ci-numar { flex: 2; }
+
+
+/* Input File */
+.input-file-label { margin-top: 20px !important; }
+.input-file-style { margin-bottom: 15px !important; }
+
+
+/* Erori */
+.error-message { color: #c00000; font-size: 13px; margin-top: 5px; }
+.input-error { border-color: #c00000 !important; }
+
+/* 3. Butoane */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-save, .btn-cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-save { background-color: #a85834; color: #fff; }
+.btn-cancel { background-color: #bfac8b; color: #3e322a; }
+
+##################
+// src/components/AdaugaEditeazaArtist.jsx - FINAL: Formular Persoană & Validare CI
+
+import React, { useState, useEffect } from 'react';
+import './AdaugaEditeazaArtist.css';
+
+const initialPersonState = {
+    nume: '',
+    prenume: '',
+    cnp: '', // 13 cifre
+    dataNasterii: '', 
+    seriaCi: '', // 2 caractere (litere)
+    numarCi: '', // 6 cifre
+    dataExpirareCi: '', // Format YYYY-MM-DD
+    adresaDomiciliu: '',
+    nrTelefon: '', // 10 cifre
+    pozaUrl: '',
+};
+
+function AdaugaEditeazaArtist({ isVisible, onClose, onSave, personToEdit }) {
+    const [persoana, setPersoana] = useState(personToEdit || initialPersonState);
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        const personState = personToEdit ? personToEdit : initialPersonState;
+        setPersoana(personState);
+        setErrors({});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [personToEdit, isVisible]);
+
+    if (!isVisible) return null;
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        
+        // Validare CNP (13 cifre), Telefon (10 cifre) și Număr CI (6 cifre) - doar cifre
+        if ((name === 'cnp' && !/^\d*$/.test(value)) || 
+            (name === 'nrTelefon' && !/^\d*$/.test(value)) || 
+            (name === 'numarCi' && !/^\d*$/.test(value))) {
+            return;
+        }
+
+        // Validare Seria CI (2 litere, uppercase)
+        if (name === 'seriaCi') {
+            const upperValue = value.toUpperCase();
+            if (!/^[A-Z]*$/.test(upperValue) || upperValue.length > 2) return;
+            setPersoana({ ...persoana, [name]: upperValue });
+        } else {
+            setPersoana({ ...persoana, [name]: value });
+        }
+        
+        setErrors({ ...errors, [name]: '' });
+    };
+
+    // Logica de încărcare Poză
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => setPersoana(prev => ({ ...prev, pozaUrl: reader.result }));
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    const validate = () => {
+        let newErrors = {};
+        let isValid = true;
+        
+        // CORECȚIE: Am adăugat ghilimele la mesajele de eroare
+        if (!persoana.nume.trim()) { 
+            newErrors.nume = "Numele este obligatoriu."; 
+            isValid = false; 
+        }
+        if (persoana.cnp.length !== 13) { 
+            newErrors.cnp = "CNP-ul trebuie să aibă exact 13 cifre."; 
+            isValid = false; 
+        }
+        if (persoana.nrTelefon.length !== 10) { 
+            newErrors.nrTelefon = "Telefonul trebuie să aibă exact 10 cifre."; 
+            isValid = false; 
+        }
+        if (persoana.seriaCi.length !== 2) { 
+            newErrors.seriaCi = "Seria CI trebuie să aibă 2 litere."; 
+            isValid = false; 
+        }
+        if (persoana.numarCi.length !== 6) { 
+            newErrors.numarCi = "Numărul CI trebuie să aibă 6 cifre."; 
+            isValid = false; 
+        }
+        if (!persoana.dataExpirareCi) { 
+            newErrors.dataExpirareCi = "Data expirării CI este obligatorie."; 
+            isValid = false; 
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) {
+            onSave(persoana);
+        }
+    };
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content futurist-form">
+                <h3>{personToEdit ? "Editează" : "Adaugă"} Persoană</h3>
+                <form onSubmit={handleSubmit}>
+                    
+                    {/* INPUTURI PRINCIPALE */}
+                    <label>Nume *</label>
+                    <input type="text" name="nume" value={persoana.nume} onChange={handleChange} className={errors.nume ? 'input-error' : ''} />
+                    {errors.nume && <p className="error-message">{errors.nume}</p>}
+                    
+                    <label>Prenume</label>
+                    <input type="text" name="prenume" value={persoana.prenume} onChange={handleChange} />
+
+                    <label>CNP (13 cifre) *</label>
+                    <input type="text" name="cnp" value={persoana.cnp} onChange={handleChange} maxLength="13" className={errors.cnp ? 'input-error' : ''} />
+                    {errors.cnp && <p className="error-message">{errors.cnp}</p>}
+                    
+                    <label>Data Nașterii</label>
+                    <input type="date" name="dataNasterii" value={persoana.dataNasterii} onChange={handleChange} />
+
+                    <label>Adresa Domiciliu</label>
+                    <input type="text" name="adresaDomiciliu" value={persoana.adresaDomiciliu} onChange={handleChange} />
+
+                    {/* GRUP CI */}
+                    {/* Am păstrat stilurile inline pentru a garanta aranjarea corectă dacă CSS-ul lipsește */}
+                    <div className="input-ci-group" style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                        <div className="ci-seria" style={{ flex: 1 }}>
+                            <label>Seria CI (2 litere) *</label>
+                            <input type="text" name="seriaCi" value={persoana.seriaCi} onChange={handleChange} maxLength="2" className={errors.seriaCi ? 'input-error' : ''} />
+                            {errors.seriaCi && <p className="error-message">{errors.seriaCi}</p>}
+                        </div>
+                        <div className="ci-numar" style={{ flex: 2 }}>
+                            <label>Număr CI (6 cifre) *</label>
+                            <input type="text" name="numarCi" value={persoana.numarCi} onChange={handleChange} maxLength="6" className={errors.numarCi ? 'input-error' : ''} />
+                            {errors.numarCi && <p className="error-message">{errors.numarCi}</p>}
+                        </div>
+                    </div>
+                    
+                    <label>Data Expirării CI *</label>
+                    <input type="date" name="dataExpirareCi" value={persoana.dataExpirareCi} onChange={handleChange} className={errors.dataExpirareCi ? 'input-error' : ''} />
+                    {/* CORECȚIE: Am reparat 'className className' */}
+                    {errors.dataExpirareCi && <p className="error-message">{errors.dataExpirareCi}</p>}
+
+                    <label>Număr Telefon (10 cifre) *</label>
+                    <input type="text" name="nrTelefon" value={persoana.nrTelefon} onChange={handleChange} maxLength="10" className={errors.nrTelefon ? 'input-error' : ''} />
+                    {/* CORECȚIE: Am reparat 'className className' */}
+                    {errors.nrTelefon && <p className="error-message">{errors.nrTelefon}</p>}
+                    
+                    {/* ÎNCĂRCARE POZĂ */}
+                    <label className="input-file-label" style={{ marginTop: '20px' }}>Încarcă Poză/Avatar</label>
+                    <input type="file" name="poza" accept="image/*" onChange={handleFileChange} className="input-file-style" style={{ marginBottom: '15px' }} />
+
+                    <div className="form-actions">
+                        <button type="button" onClick={onClose} className="btn-cancel">Anulează</button>
+                        <button type="submit" className="btn-save">
+                            {personToEdit ? "Salvează Modificările" : "Adaugă Persoana"}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+export default AdaugaEditeazaArtist;
+#################################################
+/* src/components/ConfirmDeleteModal.css - TEMA COSA NOSTRA SIMPLIFICATĂ */
+
+.confirm-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.confirm-modal-content {
+    background-color: #fffaf5; 
+    color: #3e322a; 
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7); 
+    max-width: 350px;
+    width: 90%;
+    border: 3px solid #e45b3d; 
+    text-align: center;
+}
+
+.confirm-modal-content h3 {
+    color: #c00000; 
+    margin-top: 0;
+    border-bottom: 2px solid #a85834;
+    padding-bottom: 10px;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-cancel-retro, .btn-delete-confirm-retro {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cancel-retro { background-color: #bfac8b; color: #3e322a; }
+.btn-delete-confirm-retro { background-color: #c00000; color: white; }
+#############################################
+// src/components/ConfirmDeleteModal.jsx
+
+import React from 'react';
+import './ConfirmDeleteModal.css';
+
+function ConfirmDeleteModal({ artist, onConfirm, onCancel }) {
+    if (!artist) return null;
+
+    return (
+        <div className="confirm-modal-overlay">
+            <div className="confirm-modal-content cosa-nostra-confirm">
+                <h3>CONFIRMARE ȘTERGERE DATE</h3>
+                
+                <p>Ești pe cale să ștergi definitiv artistul:</p>
+                
+                <div className="artist-info-box">
+                    <strong>{artist.numeScena}</strong>
+                    <p>Gen: {artist.genMuzical}</p>
+                </div>
+                
+                <p>Această acțiune nu poate fi anulată.</p>
+                <p>Vrei să confirmi ștergerea?</p>
+
+                <div className="confirm-actions">
+                    <button onClick={onCancel} className="btn-cancel-retro">
+                        Anulează
+                    </button>
+                    <button onClick={onConfirm} className="btn-delete-confirm-retro">
+                        ȘTERGE DEFINITIV
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default ConfirmDeleteModal;
+####################################################################
+/* src/components/ListaArtisti.css - TEMA COSA NOSTRA SIMPLIFICATĂ */
+
+/* 1. Container Principal (Layout pe Două Coloane) */
+.lista-detalii-container {
+    display: flex;
+    gap: 25px;
+    padding: 20px 10px;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 2. Coloane */
+.lista-coloana {
+    flex: 1; 
+    min-width: 300px;
+    background-color: #f7f0e8; 
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e0d8cc;
+}
+
+.detalii-coloana {
+    flex: 2; 
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e0d8cc;
+}
+
+.detalii-titlu {
+    color: #3e322a;
+    border-bottom: 2px solid #c8a287;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.search-input-futurist {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #c8a287;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+/* 3. Lista de Carduri */
+.lista-artisti-scroll {
+    max-height: 60vh; 
+    overflow-y: auto;
+}
+
+.artist-card {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fcf4ec; 
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #e0d8cc;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.artist-card.selectat-neon {
+    border: 2px solid #e45b3d; 
+    box-shadow: 0 0 8px rgba(228, 91, 61, 0.5);
+}
+
+.nume-scena {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #a85834;
+}
+
+/* Status Valabilitate CI (aplicat pe tag-uri și text) */
+.status-tag {
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-left: 10px;
+    color: white; 
+}
+.status-bold {
+    font-weight: bold;
+    margin-left: 5px;
+}
+/* Culorile Logice */
+.status-green { background-color: #4CAF50; } 
+.status-orange { background-color: #e45b3d; }
+.status-red { background-color: #c00000; }
+.status-gray { background-color: #bfac8b; }
+
+/* 4. Detalii și Acțiuni */
+.detalii-card-futurist p {
+    padding: 8px 0;
+    border-bottom: 1px dashed #c8a287;
+}
+
+.detalii-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.btn-edit { background-color: #bfac8b; color: #3e322a; border-color: #a1917b; }
+.btn-delete { background-color: #c00000; color: white; border-color: #9c0000; }
+.btn-copy { background-color: #e45b3d; color: #fff; border-color: #a85834; }
+################################################################
+// src/components/ListaArtisti.jsx - FINAL: Cu Logica de Valabilitate CI
+
+import React from 'react';
+import './ListaArtisti.css'; 
+
+// --- Logica de Verificare Valabilitate CI ---
+function getValabilitateCI(dataExpirareStr) {
+    if (!dataExpirareStr) {
+        return { status: 'Necunoscut', message: 'Data de expirare lipsește.', class: 'status-gray' };
+    }
+
+    const dataExpirare = new Date(dataExpirareStr);
+    const azi = new Date();
+    azi.setHours(0, 0, 0, 0); 
+    dataExpirare.setHours(0, 0, 0, 0);
+
+    const diferentaInTimp = dataExpirare.getTime() - azi.getTime();
+    // Transformăm milisecundele în zile
+    const zileRamase = Math.ceil(diferentaInTimp / (1000 * 3600 * 24));
+
+    if (zileRamase < 0) {
+        return { status: 'Expirat', message: 'ACT EXPIRAT!', class: 'status-red' };
+    } else if (zileRamase <= 90) { 
+        // CORECȚIE: Am adăugat backticks (`)
+        return { status: 'Avertizare', message: `Expiră în ${zileRamase} zile.`, class: 'status-orange' };
+    } else {
+        return { status: 'Valabil', message: 'Valabil.', class: 'status-green' };
+    }
+}
+// ------------------------------------------
+
+function ListaArtisti({ 
+    artisti, searchTerm, setSearchTerm, artistSelectat, 
+    onSelectArtist, onEdit, onDelete, onCopyData 
+}) {
+    // Logica de filtrare (Actualizată pentru Persoane)
+    const artistiFiltrati = artisti.filter(person => {
+        const term = searchTerm.toLowerCase();
+        return (
+            person.nume?.toLowerCase().includes(term) ||
+            person.prenume?.toLowerCase().includes(term) ||
+            person.cnp?.toLowerCase().includes(term)
+        );
+    });
+    
+    return (
+        <div className="lista-detalii-container">
+            {/* 1. Coloana Lista și Search */}
+            <div className="lista-coloana">
+                <input
+                    type="text"
+                    placeholder="Caută după nume, prenume sau CNP..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input-futurist"
+                />
+
+                <div className="lista-artisti-scroll">
+                    {artistiFiltrati.length === 0 ? (
+                        <p className="no-results">Nu există persoane adăugate sau nu s-a găsit nimic.</p>
+                    ) : (
+                        artistiFiltrati.map(a => (
+                            <div
+                                key={a.id}
+                                // CORECȚIE: Am adăugat backticks (`) pentru clasa dinamică
+                                className={`artist-card ${artistSelectat && artistSelectat.id === a.id ? 'selectat-neon' : ''}`}
+                                onClick={() => onSelectArtist(a)}
+                            >
+                                <div className="card-header">
+                                    <span className="nume-scena">{a.nume} {a.prenume}</span>
+                                    {/* Badge pentru statusul CI direct în listă */}
+                                    {(() => {
+                                        const valabilitate = getValabilitateCI(a.dataExpirareCi);
+                                        // CORECȚIE: Backticks (`)
+                                        return <span className={`status-tag ${valabilitate.class}`}>{valabilitate.status}</span>;
+                                    })()}
+                                </div>
+                                <p className="nume-real">CNP: {a.cnp}</p>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* 2. Coloana Detalii Persoană */}
+            <div className="detalii-coloana">
+                <h3 className="detalii-titlu">Informații Card</h3>
+                {artistSelectat ? (
+                    <div className="detalii-card-futurist">
+                        
+                        {/* Poză Avatar (Opțional) */}
+                        {artistSelectat.pozaUrl && (
+                             <img src={artistSelectat.pozaUrl} alt="Avatar" className="artist-avatar-detalii" />
+                        )}
+
+                        {/* Detalii Persoană */}
+                        <p><strong>Nume Complet:</strong> {artistSelectat.nume} {artistSelectat.prenume}</p>
+                        <p><strong>CNP:</strong> {artistSelectat.cnp}</p>
+                        <p><strong>Data Nașterii:</strong> {artistSelectat.dataNasterii}</p>
+                        <p><strong>CI:</strong> {artistSelectat.seriaCi} {artistSelectat.numarCi}</p>
+                        <p><strong>Data Expirării CI:</strong> {artistSelectat.dataExpirareCi}</p>
+                        <p><strong>Adresă:</strong> {artistSelectat.adresaDomiciliu || 'N/A'}</p>
+                        <p><strong>Telefon:</strong> {artistSelectat.nrTelefon}</p>
+
+                        {/* AFISARE VALABILITATE CI */}
+                        {(() => {
+                            const valabilitate = getValabilitateCI(artistSelectat.dataExpirareCi);
+                            return (
+                                <p>
+                                    <strong>Valabilitate: </strong> 
+                                    {/* CORECȚIE: Backticks (`) */}
+                                    <span className={`status-text ${valabilitate.class} status-bold`}> 
+                                        {valabilitate.message}
+                                    </span>
+                                </p>
+                            );
+                        })()}
+
+                        <div className="detalii-actions">
+                            <button onClick={() => onEdit(artistSelectat)} className="btn-action btn-edit">Editează (Task 2)</button>
+                            <button onClick={() => onCopyData(artistSelectat)} className="btn-action btn-copy">Copiază Date (Task 4)</button>
+                            <button onClick={onDelete} className="btn-action btn-delete">Șterge (Task 3)</button>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="no-selection">Selectează o persoană din listă pentru a vedea detaliile.</p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default ListaArtisti;
+#################################################################################
+/* src/App.css - TEMA COSA NOSTRA SIMPLIFICATĂ */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #3e322a; /* Maro închis */
+    min-height: 100vh;
+    
+    /* Fundalul tematic */
+    background-color: #f7f0e8; 
+    background-image: url('/CosaNuestra.png'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.App {
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid #a85834; /* Maro Principal */
+    max-width: 1400px;
+    margin: 0 auto 20px auto; 
+    
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+}
+
+.header-container h1 {
+    color: #a85834; 
+    font-size: 2.2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.adauga-nou-btn {
+    background-color: #e45b3d; /* Roșu/Portocaliu Accent */
+    color: #fff;
+    padding: 10px 20px;
+    border: 1px solid #a85834;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.adauga-nou-btn:hover {
+    background-color: #d15135;
+}
+###############################################################
+/* eslint-disable react-hooks/static-components */
+// src/App.jsx - FINAL: Logica Principală, Stări și Modale Inline
+
+import React, { useState } from 'react';
+import './App.css'; 
+import ListaArtisti from './components/ListaArtisti.jsx'; 
+import AdaugaEditeazaArtist from './components/AdaugaEditeazaArtist.jsx'; 
+
+const INITIAL_PEOPLE = [];
+
+function App() {
+    // 1. STĂRILE APLICAȚIEI
+    // Păstrăm numele variabilei 'artisti' pentru consistență, dar ea va stoca Persoane
+    const [artisti, setArtisti] = useState(INITIAL_PEOPLE);
+    const [artistSelectat, setArtistSelectat] = useState(null); 
+    const [searchTerm, setSearchTerm] = useState(''); 
+    
+    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false); 
+    const [artistInLucru, setArtistInLucru] = useState(null); 
+
+    // 2. LOGICA CRUD (UPDATE & CREATE)
+    const handleSaveArtist = (artistSalvat) => {
+        if (artistSalvat.id) {
+            // * UPDATE *
+            const listaActualizata = artisti.map(a => a.id === artistSalvat.id ? artistSalvat : a);
+            setArtisti(listaActualizata);
+            // Actualizăm și selecția pentru a vedea modificările imediat
+            setArtistSelectat(artistSalvat); 
+        } else {
+            // * CREATE (Adăugare) *
+            const newArtist = { ...artistSalvat, id: Date.now() }; 
+            setArtisti(prevArtisti => [...prevArtisti, newArtist]); 
+            setArtistSelectat(newArtist); 
+        }
+        setIsModalOpen(false); 
+    };
+
+    // LOGICA DELETE
+    const confirmDelete = () => {
+        if (artistSelectat) {
+            setArtisti(artisti.filter(a => a.id !== artistSelectat.id));
+            setArtistSelectat(null); 
+        }
+        setIsConfirmOpen(false);
+    };
+
+    // LOGICA COPY (Task Final)
+    const handleCopyData = (artistToCopy) => {
+        if (artistToCopy) {
+            // CORECȚIE CRITICĂ: Am adăugat backticks (`)
+            const data = `Nume: ${artistToCopy.nume} ${artistToCopy.prenume}\nCNP: ${artistToCopy.cnp}\nCI: ${artistToCopy.seriaCi} ${artistToCopy.numarCi}\nTelefon: ${artistToCopy.nrTelefon}`;
+                
+            navigator.clipboard.writeText(data)
+                // CORECȚIE: Backticks și aici
+                .then(() => alert(`Datele persoanei ${artistToCopy.nume} au fost copiate!`));
+        }
+    };
+
+    // 3. MODAL CONFIRMARE (Simplificat, Inline)
+    const ConfirmDeleteModal = () => (
+        <div className="modal-overlay"> {/* Am uniformizat clasa cu CSS-ul existent */}
+            <div className="modal-content futurist-form" style={{ textAlign: 'center' }}>
+                <h3>Confirmă Ștergerea</h3>
+                <p>Sigur vrei să ștergi pe <strong>{artistSelectat?.nume} {artistSelectat?.prenume}</strong>?</p>
+                <div className="form-actions" style={{ justifyContent: 'center', marginTop: '20px' }}>
+                    <button onClick={confirmDelete} className="btn-save" style={{ backgroundColor: '#ff4d4d' }}>DA, ȘTERGE</button>
+                    <button onClick={() => setIsConfirmOpen(false)} className="btn-cancel">ANULEAZĂ</button>
+                </div>
+            </div>
+        </div>
+    );
+
+    // 4. INTERFAȚA (RENDER)
+    return (
+        <div className="App">
+            <header className="header-container">
+                <h1>Catalog Persoane</h1>
+                <button 
+                    onClick={() => { 
+                        setArtistInLucru(null); 
+                        setIsModalOpen(true); 
+                    }}
+                    className="adauga-nou-btn">
+                    ➕ ADAUGĂ NOU
+                </button>
+            </header>
+
+            <ListaArtisti 
+                artisti={artisti}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                artistSelectat={artistSelectat}
+                onSelectArtist={setArtistSelectat}
+                
+                onEdit={(artist) => { setArtistInLucru(artist); setIsModalOpen(true); }}
+                onDelete={() => setIsConfirmOpen(true)}
+                onCopyData={handleCopyData}
+            />
+
+            <AdaugaEditeazaArtist 
+                isVisible={isModalOpen}
+                personToEdit={artistInLucru} // Trimitem prop-ul corect definit în fișierul anterior
+                onClose={() => setIsModalOpen(false)}
+                onSave={handleSaveArtist}
+            />
+
+            {isConfirmOpen && artistSelectat && <ConfirmDeleteModal />}
+        </div>
+    );
+}
+
+export default App;

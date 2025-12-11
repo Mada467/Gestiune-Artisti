@@ -1,10 +1,9 @@
-/* src/components/AdaugaEditeazaArtist.css - TEMA COSA NOSTRA SIMPLIFICATĂ */
+/* AdaugaEditeazaArtist.css - COSA NOSTRA */
 
-/* 1. Fundal și Conținut Modal */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6); 
+    inset: 0;
+    background: rgba(0,0,0,0.75);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,83 +11,116 @@
 }
 
 .modal-content {
-    background-color: #fffaf5; 
+    background: linear-gradient(135deg, rgba(255,250,245,0.95), rgba(245,230,211,0.95)), 
+                url('/CosaNuestra1.png') center/cover;
     color: #3e322a;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+    padding: 30px;
+    border-radius: 15px;
     max-width: 500px;
     width: 90%;
-    border: 2px solid #a85834;
-    /* ADĂUGAT PENTRU SCROLL */
     max-height: 85vh;
     overflow-y: auto;
+    border: 3px solid #a85834;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
 }
 
 .modal-content h3 {
-    color: #a85834; 
+    color: #a85834;
     text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 1px dashed #c8a287;
-    padding-bottom: 10px;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #c8a287;
+    font-size: 22px;
+    text-transform: uppercase;
 }
 
-/* 2. Layout Formular & Inputuri */
 .modal-content label {
     display: block;
-    margin: 12px 0 4px 0;
+    margin: 15px 0 6px;
     font-weight: 600;
+    color: #5a4a3a;
+    font-size: 14px;
 }
 
-.modal-content input, .modal-content select {
+.modal-content input, 
+.modal-content select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #c8a287; 
-    border-radius: 3px;
-    background-color: #fff;
+    padding: 12px 15px;
+    border: 2px solid #c8a287;
+    border-radius: 8px;
+    background: #fff;
     box-sizing: border-box;
+    transition: all 0.3s;
 }
 
-.modal-content input:focus {
-    border-color: #e45b3d; 
-    box-shadow: 0 0 5px rgba(228, 91, 61, 0.5);
+.modal-content input:focus,
+.modal-content select:focus {
+    border-color: #e45b3d;
     outline: none;
+    box-shadow: 0 0 12px rgba(228,91,61,0.4);
 }
 
-/* Gruparea Câmpurilor Seria/Numărul CI */
 .input-ci-group {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .ci-seria { flex: 1; }
 .ci-numar { flex: 2; }
 
+.input-file-style {
+    padding: 15px;
+    border: 2px dashed #c8a287;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
 
-/* Input File */
-.input-file-label { margin-top: 20px !important; }
-.input-file-style { margin-bottom: 15px !important; }
+.input-file-style:hover {
+    border-color: #a85834;
+}
 
+.error-message {
+    color: #c00000;
+    font-size: 12px;
+    margin-top: 6px;
+}
 
-/* Erori */
-.error-message { color: #c00000; font-size: 13px; margin-top: 5px; }
-.input-error { border-color: #c00000 !important; }
+.input-error {
+    border-color: #c00000 !important;
+    background-color: rgba(192,0,0,0.05) !important;
+}
 
-/* 3. Butoane */
 .form-actions {
     display: flex;
-    justify-content: flex-end; 
-    gap: 15px;
-    margin-top: 25px;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(191,172,139,0.3);
 }
 
 .btn-save, .btn-cancel {
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s;
 }
 
-.btn-save { background-color: #a85834; color: #fff; }
-.btn-cancel { background-color: #bfac8b; color: #3e322a; }
+.btn-save {
+    background: linear-gradient(135deg, #a85834, #8a4529);
+    color: #fff;
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #bfac8b, #a89670);
+    color: #3e322a;
+}
+
+.btn-save:hover, .btn-cancel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}

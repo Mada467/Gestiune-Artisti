@@ -1,12 +1,11 @@
-/* src/App.css - TEMA COSA NOSTRA ÎMBUNĂTĂȚITĂ */
+/* src/App.css - TEMA COSA NOSTRA - OPTIMIZAT */
 
+/* Fundalul aplicației */
 body {
     margin: 0;
     font-family: 'Georgia', 'Segoe UI', serif;
-    color: #3e322a; /* Maro închis */
+    color: #3e322a;
     min-height: 100vh;
-    
-    /* Fundalul tematic */
     background-color: #f7f0e8; 
     background-image: url('/CosaNuestra.png'); 
     background-size: cover;
@@ -19,25 +18,24 @@ body {
     min-height: 100vh;
 }
 
+/* Header - Bara de sus cu titlu și buton */
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 25px 30px;
-    border-bottom: 3px solid #82300b; /* Maro Principal */
     max-width: 1400px;
     margin: 0 auto 20px auto; 
-    
-    /* Gradient bej închis elegant */
     background: linear-gradient(135deg, #d4c4a8 0%, #bfac8b 100%);
     border-radius: 15px;
     border: 3px solid #a85834;
+    border-bottom: 3px solid #82300b;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     position: relative;
     overflow: hidden;
 }
 
-/* Efect decorativ subtil */
+/* Linie decorativă în header */
 .header-container::before {
     content: '';
     position: absolute;
@@ -49,16 +47,17 @@ body {
     opacity: 0.6;
 }
 
+/* Titlul principal */
 .header-container h1 {
-    color: #935936; /* Maro foarte închis pentru contrast */
+    color: #935936;
     font-size: 2.4em;
     font-family: 'Georgia', serif;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 
-                 1px 1px 0 rgba(255, 255, 255, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 1px 1px 0 rgba(255, 255, 255, 0.5);
     margin: 0;
     letter-spacing: 1px;
 }
 
+/* Butonul "Adaugă Nou" */
 .adauga-nou-btn {
     background: linear-gradient(135deg, #e45b3d, #c84a2f);
     color: #fff;
@@ -75,12 +74,14 @@ body {
     font-family: 'Georgia', serif;
 }
 
+/* Efecte la hover pe buton */
 .adauga-nou-btn:hover {
     background: linear-gradient(135deg, #d15135, #b53d25);
     transform: translateY(-2px);
     box-shadow: 0 7px 20px rgba(228, 91, 61, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
+/* Efect când apeși butonul */
 .adauga-nou-btn:active {
     transform: translateY(0);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
