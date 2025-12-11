@@ -1,9 +1,9 @@
-// src/components/ListaArtisti.jsx - ZIUA 2: Update, Delete & Search Activ
+// src/components/ListaArtisti.jsx - FINAL: Cu Logica de Valabilitate CI
 
 import React from 'react';
 import './ListaArtisti.css'; 
 
-// --- Logica de Verificare Valabilitate CI (Neschimbată) ---
+// --- Logica de Verificare Valabilitate CI ---
 function getValabilitateCI(dataExpirareStr) {
     if (!dataExpirareStr) {
         return { status: 'Necunoscut', message: 'Data de expirare lipsește.', class: 'status-gray' };
@@ -15,12 +15,13 @@ function getValabilitateCI(dataExpirareStr) {
     dataExpirare.setHours(0, 0, 0, 0);
 
     const diferentaInTimp = dataExpirare.getTime() - azi.getTime();
+    // Transformăm milisecundele în zile
     const zileRamase = Math.ceil(diferentaInTimp / (1000 * 3600 * 24));
 
     if (zileRamase < 0) {
         return { status: 'Expirat', message: 'ACT EXPIRAT!', class: 'status-red' };
     } else if (zileRamase <= 90) { 
-        // CORECȚIE: Backticks (`)
+        
         return { status: 'Avertizare', message: `Expiră în ${zileRamase} zile.`, class: 'status-orange' };
     } else {
         return { status: 'Valabil', message: 'Valabil.', class: 'status-green' };
@@ -32,7 +33,7 @@ function ListaArtisti({
     artisti, searchTerm, setSearchTerm, artistSelectat, 
     onSelectArtist, onEdit, onDelete, onCopyData 
 }) {
-    // Logica de filtrare completă (Căutarea este ACUM ACTIVĂ)
+    // Logica de filtrare (Actualizată pentru Persoane)
     const artistiFiltrati = artisti.filter(person => {
         const term = searchTerm.toLowerCase();
         return (
@@ -50,7 +51,7 @@ function ListaArtisti({
                     type="text"
                     placeholder="Caută după nume, prenume sau CNP..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)} // Căutarea este activă!
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="search-input-futurist"
                 />
 
@@ -61,15 +62,14 @@ function ListaArtisti({
                         artistiFiltrati.map(a => (
                             <div
                                 key={a.id}
-                                // CORECȚIE: Backticks (`) pentru clasa dinamică
                                 className={`artist-card ${artistSelectat && artistSelectat.id === a.id ? 'selectat-neon' : ''}`}
                                 onClick={() => onSelectArtist(a)}
                             >
                                 <div className="card-header">
                                     <span className="nume-scena">{a.nume} {a.prenume}</span>
+                                    {/* Badge pentru statusul CI direct în listă */}
                                     {(() => {
                                         const valabilitate = getValabilitateCI(a.dataExpirareCi);
-                                        // CORECȚIE: Backticks (`)
                                         return <span className={`status-tag ${valabilitate.class}`}>{valabilitate.status}</span>;
                                     })()}
                                 </div>
@@ -86,12 +86,12 @@ function ListaArtisti({
                 {artistSelectat ? (
                     <div className="detalii-card-futurist">
                         
-                        {/* Poză (dacă există) */}
+                        {/* Poză Avatar (Opțional) */}
                         {artistSelectat.pozaUrl && (
                              <img src={artistSelectat.pozaUrl} alt="Avatar" className="artist-avatar-detalii" />
                         )}
 
-                        {/* Date Personale */}
+                        {/* Detalii Persoană */}
                         <p><strong>Nume Complet:</strong> {artistSelectat.nume} {artistSelectat.prenume}</p>
                         <p><strong>CNP:</strong> {artistSelectat.cnp}</p>
                         <p><strong>Data Nașterii:</strong> {artistSelectat.dataNasterii}</p>
@@ -100,13 +100,12 @@ function ListaArtisti({
                         <p><strong>Adresă:</strong> {artistSelectat.adresaDomiciliu || 'N/A'}</p>
                         <p><strong>Telefon:</strong> {artistSelectat.nrTelefon}</p>
 
-                        {/* Status Valabilitate Detaliat */}
+                        {/* AFISARE VALABILITATE CI */}
                         {(() => {
                             const valabilitate = getValabilitateCI(artistSelectat.dataExpirareCi);
                             return (
                                 <p>
                                     <strong>Valabilitate: </strong> 
-                                    {/* CORECȚIE: Backticks (`) */}
                                     <span className={`status-text ${valabilitate.class} status-bold`}> 
                                         {valabilitate.message}
                                     </span>
@@ -115,9 +114,8 @@ function ListaArtisti({
                         })()}
 
                         <div className="detalii-actions">
-                            {/* Butoanele Editează și Șterge sunt ACUM ACTIVE și trimit obiectul selectat */}
-                            <button onClick={() => onEdit(artistSelectat)} className="btn-action btn-edit">Editează</button> 
-                            <button onClick={onCopyData} className="btn-action btn-copy">Copiază Date</button>
+                            <button onClick={() => onEdit(artistSelectat)} className="btn-action btn-edit">Editează</button>
+                            <button onClick={() => onCopyData(artistSelectat)} className="btn-action btn-copy">Copiază Date</button>
                             <button onClick={onDelete} className="btn-action btn-delete">Șterge</button>
                         </div>
                     </div>

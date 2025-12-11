@@ -19,7 +19,10 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
     max-width: 500px;
     width: 90%;
-    border: 2px solid #a85834; 
+    border: 2px solid #a85834;
+    /* ADĂUGAT PENTRU SCROLL */
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
 .modal-content h3 {
