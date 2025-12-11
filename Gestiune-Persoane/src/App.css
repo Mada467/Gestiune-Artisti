@@ -24,7 +24,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 25px 30px;
-    border-bottom: 3px solid #85523b; /* Maro Principal */
+    border-bottom: 3px solid #82300b; /* Maro Principal */
     max-width: 1400px;
     margin: 0 auto 20px auto; 
     
@@ -50,7 +50,7 @@ body {
 }
 
 .header-container h1 {
-    color: #a67a5e; /* Maro foarte închis pentru contrast */
+    color: #935936; /* Maro foarte închis pentru contrast */
     font-size: 2.4em;
     font-family: 'Georgia', serif;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 

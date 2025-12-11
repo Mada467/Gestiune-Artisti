@@ -1,17 +1,20 @@
 /* eslint-disable react-hooks/static-components */
-// src/App.jsx - FINAL: Logica Principală, Stări și Modale Inline
+// src/App.jsx - FINAL: Cu localStorage pentru persistență date
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css'; 
 import ListaArtisti from './components/ListaArtisti.jsx'; 
 import AdaugaEditeazaArtist from './components/AdaugaEditeazaArtist.jsx'; 
 
-const INITIAL_PEOPLE = [];
+const STORAGE_KEY = 'catalogPersoane';
 
 function App() {
-    // 1. STĂRILE APLICAȚIEI
-    // Păstrăm numele variabilei 'artisti' pentru consistență, dar ea va stoca Persoane
-    const [artisti, setArtisti] = useState(INITIAL_PEOPLE);
+    // 1. STĂRILE APLICAȚIEI - Inițializare din localStorage
+    const [artisti, setArtisti] = useState(() => {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        return savedData ? JSON.parse(savedData) : [];
+    });
+    
     const [artistSelectat, setArtistSelectat] = useState(null); 
     const [searchTerm, setSearchTerm] = useState(''); 
     
@@ -19,7 +22,12 @@ function App() {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false); 
     const [artistInLucru, setArtistInLucru] = useState(null); 
 
-    // 2. LOGICA CRUD (UPDATE & CREATE)
+    // 2. SALVARE AUTOMATĂ în localStorage la fiecare modificare
+    useEffect(() => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(artisti));
+    }, [artisti]);
+
+    // 3. LOGICA CRUD (UPDATE & CREATE)
     const handleSaveArtist = (artistSalvat) => {
         if (artistSalvat.id) {
             // * UPDATE *
@@ -48,18 +56,16 @@ function App() {
     // LOGICA COPY (Task Final)
     const handleCopyData = (artistToCopy) => {
         if (artistToCopy) {
-            // CORECȚIE CRITICĂ: Am adăugat backticks (`)
             const data = `Nume: ${artistToCopy.nume} ${artistToCopy.prenume}\nCNP: ${artistToCopy.cnp}\nCI: ${artistToCopy.seriaCi} ${artistToCopy.numarCi}\nTelefon: ${artistToCopy.nrTelefon}`;
                 
             navigator.clipboard.writeText(data)
-                
                 .then(() => alert(`Datele persoanei ${artistToCopy.nume} au fost copiate!`));
         }
     };
 
-    // 3. MODAL CONFIRMARE (Simplificat, Inline)
+    // 4. MODAL CONFIRMARE (Simplificat, Inline)
     const ConfirmDeleteModal = () => (
-        <div className="modal-overlay"> {/* Am uniformizat clasa cu CSS-ul existent */}
+        <div className="modal-overlay">
             <div className="modal-content futurist-form" style={{ textAlign: 'center' }}>
                 <h3>Confirmă Ștergerea</h3>
                 <p>Sigur vrei să ștergi pe <strong>{artistSelectat?.nume} {artistSelectat?.prenume}</strong>?</p>
@@ -71,7 +77,7 @@ function App() {
         </div>
     );
 
-    // 4. INTERFAȚA 
+    // 5. INTERFAȚA 
     return (
         <div className="App">
             <header className="header-container">
@@ -100,7 +106,7 @@ function App() {
 
             <AdaugaEditeazaArtist 
                 isVisible={isModalOpen}
-                personToEdit={artistInLucru} // Trimitem prop-ul corect definit în fișierul anterior
+                personToEdit={artistInLucru}
                 onClose={() => setIsModalOpen(false)}
                 onSave={handleSaveArtist}
             />
