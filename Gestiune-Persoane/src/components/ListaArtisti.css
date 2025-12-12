@@ -1,4 +1,4 @@
-/* ListaArtisti.css - COSA NOSTRA */
+/* ListaArtisti.css - COSA NOSTRA - CENTRAT */
 
 .lista-detalii-container {
     display: flex;
@@ -6,6 +6,10 @@
     padding: 20px;
     min-height: 500px;
     background: linear-gradient(135deg, #3e322a, #2f261f);
+    justify-content: center; /* Centrează pe orizontală */
+    align-items: flex-start; /* Aliniază sus pentru conținut înalt */
+    max-width: 1400px; /* Limitează lățimea maximă */
+    margin: 0 auto; /* Centrează containerul principal */
 }
 
 .lista-coloana, .detalii-coloana {
@@ -21,14 +25,19 @@
     max-height: 700px;
     display: flex;
     flex-direction: column;
+    max-width: 400px; /* Limitează lățimea coloanei stângi */
 }
 
-.detalii-coloana { flex: 1.5; }
+.detalii-coloana { 
+    flex: 1.5; 
+    max-width: 600px; /* Limitează lățimea coloanei drepte */
+}
 
 .search-input-futurist {
     width: 90%;
     padding: 12px 18px;
-    margin-bottom: 15px;
+    margin: 0 auto 15px; /* Centrează input-ul */
+    display: block; /* Face ca margin auto să funcționeze */
     border: 2px solid #e45b3d;
     border-radius: 25px;
     background: #fff;
@@ -113,6 +122,7 @@
     font-size: 22px;
     font-weight: bold;
     text-transform: uppercase;
+    text-align: center; /* Centrează titlul */
 }
 
 .detalii-card-futurist {
@@ -121,6 +131,7 @@
     border-radius: 12px;
     border: 2px solid #bfac8b;
     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    text-align: center; /* Centrează conținutul cardului */
 }
 
 .artist-avatar-detalii {
@@ -131,6 +142,8 @@
     object-fit: cover;
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     transition: transform 0.3s;
+    margin: 0 auto 20px; /* Centrează avatar-ul */
+    display: block;
 }
 
 .artist-avatar-detalii:hover { transform: scale(1.05); }
@@ -140,6 +153,7 @@
     padding: 5px 0;
     font-size: 14px;
     border-bottom: 1px solid rgba(191,172,139,0.2);
+    text-align: left; /* Păstrează textul aliniat la stânga pentru lizibilitate */
 }
 
 .detalii-card-futurist strong {
@@ -152,6 +166,7 @@
     display: flex;
     gap: 10px;
     margin-top: 20px;
+    justify-content: center; /* Centrează butoanele */
 }
 
 .btn-action {
@@ -164,6 +179,7 @@
     text-transform: uppercase;
     color: white;
     transition: all 0.3s;
+    max-width: 150px; /* Limitează lățimea butoanelor */
 }
 
 .btn-action:hover { transform: translateY(-2px); }
@@ -180,10 +196,23 @@
 }
 
 @media (max-width: 768px) {
-    .lista-detalii-container { flex-direction: column; padding: 10px; gap: 15px; }
-    .lista-coloana, .detalii-coloana { max-height: none; padding: 15px; }
+    .lista-detalii-container { 
+        flex-direction: column; 
+        padding: 10px; 
+        gap: 15px;
+        align-items: center; /* Centrează pe mobil */
+    }
+    .lista-coloana, .detalii-coloana { 
+        max-height: none; 
+        padding: 15px;
+        max-width: 100%; /* Folosește toată lățimea pe mobil */
+    }
     .search-input-futurist { width: 100%; font-size: 16px; }
     .card-header { flex-direction: column; align-items: flex-start; gap: 5px; }
     .artist-avatar-detalii { width: 100px; height: 100px; }
-    .detalii-actions { flex-direction: column; }
+    .detalii-actions { 
+        flex-direction: column;
+        align-items: stretch; /* Butoanele ocupă toată lățimea pe mobil */
+    }
+    .btn-action { max-width: 100%; }
 }

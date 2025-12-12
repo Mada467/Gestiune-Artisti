@@ -11,7 +11,7 @@
 }
 
 .modal-content {
-    background: linear-gradient(135deg, rgba(255,250,245,0.95), rgba(245,230,211,0.95)), 
+    background: linear-gradient(135deg, rgba(255,250,245,0.2), rgba(245,230,211,0.95)), 
                 url('/CosaNuestra1.png') center/cover;
     color: #3e322a;
     padding: 30px;

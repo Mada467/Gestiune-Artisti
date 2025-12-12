@@ -1,11 +1,13 @@
+/* index.css - CENTRAT PERFECT PENTRU COSA NOSTRA */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Georgia', 'Segoe UI', serif; /* Schimbat pentru tema Cosa Nostra */
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: #3e322a; /* Culoare text pentru tema Cosa Nostra */
+  background-color: #f7f0e8; /* Fundal light pentru temă */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,56 +15,163 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* Reset global pentru centrare perfectă */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-a:hover {
-  color: #535bf2;
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  padding: 0;
   display: flex;
-  place-items: center;
+  justify-content: center; /* Centrează pe orizontală */
+  align-items: flex-start; /* Aliniază sus pentru scroll natural */
   min-width: 320px;
+  min-height: 100vh;
+  background-color: #f7f0e8;
+  background-image: url('/CosaNuestra.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Container principal centrat */
+#root {
+  width: 100%;
+  max-width: 1400px; /* Limitează lățimea maximă */
+  margin: 0 auto; /* Centrează */
+  padding: 0;
+  display: flex;
+  justify-content: center;
   min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.4em;
   line-height: 1.1;
+  font-family: 'Georgia', serif;
+  color: #935936;
+  text-align: center; /* Centrează titlurile */
+  margin: 0;
+}
+
+h2, h3, h4, h5, h6 {
+  color: #a85834;
+  text-align: center;
+  font-family: 'Georgia', serif;
+}
+
+a {
+  font-weight: 500;
+  color: #a85834; /* Culoare link pentru tema Cosa Nostra */
+  text-decoration: inherit;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #e45b3d; /* Hover pentru link-uri */
 }
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 2px solid #a85834;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-family: 'Georgia', serif;
+  background: linear-gradient(135deg, #e45b3d, #c84a2f);
+  color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+button:hover {
+  background: linear-gradient(135deg, #d15135, #b53d25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(228, 91, 61, 0.5);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 3px solid #a85834;
+  outline-offset: 2px;
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive pentru tablete */
+@media (max-width: 1024px) {
+  #root {
+    max-width: 100%;
+    padding: 0 15px;
   }
-  a:hover {
-    color: #747bff;
+
+  h1 {
+    font-size: 2em;
   }
+}
+
+/* Responsive pentru mobile */
+@media (max-width: 768px) {
+  body {
+    align-items: flex-start;
+  }
+
+  #root {
+    padding: 0 10px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
   button {
-    background-color: #f9f9f9;
+    padding: 0.8em 1.5em;
+    font-size: 0.95em;
   }
+}
+
+/* Scrollbar personalizat pentru tema Cosa Nostra */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(47, 38, 31, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #a85834, #e45b3d);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e45b3d, #c84a2f);
+}
+
+/* Asigură că toate elementele sunt centrate */
+.center-all {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Disable selecție text pe elemente interactive */
+button, .btn-action, .adauga-nou-btn {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }

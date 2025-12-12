@@ -1,4 +1,4 @@
-/* src/App.css - TEMA COSA NOSTRA - OPTIMIZAT */
+/* src/App.css - TEMA COSA NOSTRA - CENTRAT PERFECT */
 
 /* Fundalul aplicației */
 body {
@@ -11,11 +11,20 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    display: flex;
+    justify-content: center; /* Centrează pe orizontală */
+    align-items: flex-start; /* Aliniază sus pentru scroll natural */
 }
 
 .App {
     padding: 20px;
     min-height: 100vh;
+    width: 100%;
+    max-width: 1400px; /* Limitează lățimea totală */
+    margin: 0 auto; /* Centrează containerul App */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrează copiii pe orizontală */
 }
 
 /* Header - Bara de sus cu titlu și buton */
@@ -24,6 +33,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 25px 30px;
+    width: 100%;
     max-width: 1400px;
     margin: 0 auto 20px auto; 
     background: linear-gradient(135deg, #d4c4a8 0%, #bfac8b 100%);
@@ -33,6 +43,7 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     position: relative;
     overflow: hidden;
+    box-sizing: border-box; /* Include padding și border în lățime */
 }
 
 /* Linie decorativă în header */
@@ -47,7 +58,7 @@ body {
     opacity: 0.6;
 }
 
-/* Titlul principal */
+/* Titlul principal - centrat pe header */
 .header-container h1 {
     color: #935936;
     font-size: 2.4em;
@@ -55,6 +66,8 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 1px 1px 0 rgba(255, 255, 255, 0.5);
     margin: 0;
     letter-spacing: 1px;
+    flex: 1; /* Ocupă spațiul disponibil */
+    text-align: center; /* Centrează textul */
 }
 
 /* Butonul "Adaugă Nou" */
@@ -72,6 +85,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-family: 'Georgia', serif;
+    flex-shrink: 0; /* Nu se micșorează butonul */
 }
 
 /* Efecte la hover pe buton */
@@ -85,4 +99,35 @@ body {
 .adauga-nou-btn:active {
     transform: translateY(0);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive - pe ecrane mici */
+@media (max-width: 768px) {
+    .App {
+        padding: 10px;
+    }
+
+    .header-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .header-container h1 {
+        font-size: 1.8em;
+        text-align: center;
+    }
+
+    .adauga-nou-btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}
+
+/* Asigură că toate componentele copil sunt centrate */
+.App > * {
+    width: 100%;
+    max-width: 1400px;
 }
